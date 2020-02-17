@@ -1,0 +1,15 @@
+{
+  "name": "ethereum-cli",
+  "version": "0.0.1",
+  "main": "index.js",
+  "repository": "git@github.com:HardlyDifficult/ethereum-cli.git",
+  "author": "HardlyDifficult",
+  "license": "MIT",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "bignumber.js": "9.0.0",
+    "web3": "1.2.6"
+  }
+}
