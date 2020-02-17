@@ -1,11 +1,6 @@
 # Airdrop
 
-To run an airdrop, first clone this repo and then run:
-
-```
-yarn
-```
-(or npm i)
+To run an airdrop, first clone this repo and then run `yarn` to install dependencies.
 
 Create a file in the directory named `.private_key` and paste in a key.  Do not use you usual wallet for this.  One way to create a private key is to generate a new account with Metamask and then under 'Account Details' 'Export Private Key'.
 
