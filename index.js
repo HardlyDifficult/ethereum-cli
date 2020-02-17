@@ -14,7 +14,7 @@ function sleep (ms) {
 
   const settings = require(`${process.cwd()}/settings.json`)
 
-  if (!fs.existsSync(`${process.cwd()}/settings.json`)) {
+  if (!fs.existsSync(`${process.cwd()}/.private_key`)) {
     console.log('Missing `.private_key`')
     process.exit()
   }
