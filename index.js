@@ -89,7 +89,7 @@ function sleep (ms) {
       amount = delta
     }
 
-    console.log(`Dropping ${web3.fromWei(amount.toFixed(), 'ether')} ETH to ${account}`)
+    console.log(`Dropping ${web3.utils.fromWei(amount.toFixed(), 'ether')} ETH to ${account}`)
     const tx = await scriptAccount.signTransaction({
       to: account, value: amount.toFixed(), gas: 21000, gasPrice: gasPriceInWei, nonce: nonce++
     })
