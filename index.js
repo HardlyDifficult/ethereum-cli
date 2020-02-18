@@ -45,13 +45,28 @@ function sleep (ms) {
     process.exit()
   }
 
-  const dropAmountInWei = web3.utils.toWei(settings.amountToDropInEther, 'ether')
+  const dropAmountInWei = new BigNumber(web3.utils.toWei(settings.amountToDropInEther, 'ether'))
   const gasPriceInWei = web3.utils.toWei(settings.gasPriceInGwei, 'gwei')
-  const totalCostPerDropInWei = new BigNumber(gasPriceInWei).times(21000).plus(dropAmountInWei)
-  const costInWei = new BigNumber(dropCount).times(totalCostPerDropInWei)
+  const gasCostInWei = new BigNumber(gasPriceInWei).times(21000)
+
+  let costInWei = new BigNumber(0)
+  if (!settings.dropTargetsTotalAccountBalance) {
+    const totalCostPerDropInWei = gasCostInWei.plus(dropAmountInWei)
+    costInWei = new BigNumber(dropCount).times(totalCostPerDropInWei)
+  } else {
+    for (let i = 0; i < settings.accounts.length; i++) {
+      const account = settings.accounts[i]
+      const balance = new BigNumber(await web3.eth.getBalance(account))
+      const delta = dropAmountInWei.minus(balance)
+      if (delta.gt(0)) {
+        costInWei = costInWei.plus(delta).plus(gasCostInWei)
+      }
+    }
+  }
+
   if (ethBalance.lt(costInWei)) {
     const deltaInEth = web3.utils.fromWei(costInWei.minus(ethBalance).toFixed(), 'ether')
-    console.log(`Bot cannot afford this drop - we need ${deltaInEth} more`)
+    console.log(`Cannot afford this drop - the script needs ${deltaInEth} more ETH`)
     process.exit()
   }
 
@@ -62,9 +77,21 @@ function sleep (ms) {
 
   for (let i = 0; i < settings.accounts.length; i++) {
     const account = settings.accounts[i]
-    console.log(`Dropping to ${account}`)
+    let amount = dropAmountInWei
+
+    const balance = new BigNumber(await web3.eth.getBalance(account))
+    const delta = dropAmountInWei.minus(balance)
+    if (settings.dropTargetsTotalAccountBalance) {
+      if (!delta.gt(0)) {
+        console.log(`Skipping ${account}`)
+        continue
+      }
+      amount = delta
+    }
+
+    console.log(`Dropping ${web3.fromWei(amount.toFixed(), 'ether')} ETH to ${account}`)
     const tx = await scriptAccount.signTransaction({
-      to: account, value: dropAmountInWei, gas: 21000, gasPrice: gasPriceInWei, nonce: nonce++
+      to: account, value: amount.toFixed(), gas: 21000, gasPrice: gasPriceInWei, nonce: nonce++
     })
 
     web3.eth.sendSignedTransaction(tx.rawTransaction)

@@ -1,6 +1,7 @@
 {
   "provider": "wss://rinkeby.infura.io/ws/v3/c13019f552f542188c0b0cdfaeb76cc4",
   "amountToDropInEther": "0.001",
+  "dropTargetsTotalAccountBalance": true,
   "gasPriceInGwei": "1.0001",
   "accounts": [
     "0x54946cdec11a17b35fEEF6F2BFE23401AD776A6a",
