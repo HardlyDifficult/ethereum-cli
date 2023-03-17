@@ -10,7 +10,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "bignumber.js": "9.0.0",
+    "bignumber.js": "9.1.1",
     "web3": "1.2.6"
   },
   "devDependencies": {
